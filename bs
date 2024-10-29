@@ -24,10 +24,6 @@ main () {
     curl=$(find_tool "curl")
     jq=$(find_tool "jq")
 
-    # curl/jq options
-    curl_options=("-s" "--http1.1" "--header" "Authorization: Token $token")
-    jq_json_escape_options=("-Rsa")
-
     while getopts "hH:U:" OPTION $1 $2 $3 $4
     do
         case "$OPTION" in
@@ -55,6 +51,10 @@ main () {
                 ;;
         esac
     done
+
+    # curl/jq options
+    curl_options=("-s" "--http1.1" "--header" "Authorization: Token $token")
+    jq_json_escape_options=("-Rsa")
 
     if [ $OPTIND -gt 1 ]; then
         shift $((OPTIND-1))
