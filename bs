@@ -176,16 +176,16 @@ search () {
     do
         case "$OPTION" in
             q)
-                query="${query:-?}${query:+&}query=$(urlencode "$OPTARG")"
+                query="${query}${query:+&}query=$(urlencode "$OPTARG")"
                 requirement "query"
                 ;;
 
             p)
-                query="${query:-?}${query:+&}page=$OPTARG"
+                query="${query}${query:+&}page=$OPTARG"
                 ;;
 
             c)
-                query="${query:-?}${query:+&}count=$OPTARG"
+                query="${query}${query:+&}count=$OPTARG"
                 ;;
 
             *)
@@ -198,7 +198,7 @@ search () {
         exit_with_error "required parameter(s) missing: ${required[*]}"
     fi
 
-    get $branch "$query"
+    get $branch "" "" "$query"
 }
 
 recycle-bin () {
@@ -214,7 +214,7 @@ recycle-bin () {
                 ;;
 
             c)
-                query="${query:-?}${query:+&}count=$OPTARG"
+                query="${query}${query:+&}count=$OPTARG"
                 ;;
 
             *)
@@ -225,7 +225,7 @@ recycle-bin () {
 
     case "$endpoint" in
         list)
-            get $branch "$query"
+            get $branch "" "" "$query"
             ;;
 
         restore)
@@ -254,19 +254,19 @@ list () {
     do
         case "$OPTION" in
             c)
-                query="${query:-?}${query:+&}count=$OPTARG"
+                query="${query}${query:+&}count=$OPTARG"
                 ;;
 
             o)
-                query="${query:-?}${query:+&}offset=$OPTARG"
+                query="${query}${query:+&}offset=$OPTARG"
                 ;;
 
             s)
-                query="${query:-?}${query:+&}sort=$OPTARG"
+                query="${query}${query:+&}sort=$OPTARG"
                 ;;
 
             f)
-                query="${query:-?}${query:+&}filter=$OPTARG"
+                query="${query}${query:+&}filter=$OPTARG"
                 ;;
 
             *)
@@ -275,7 +275,7 @@ list () {
         esac
     done
 
-    get $branch "$query"
+    get $branch "" "" "$query"
 
 }
 
@@ -523,9 +523,10 @@ get () {
     endpoint="$1"
     id="$2"
     target="$3"
+    opts="$4"
     shift 3
 
-    "$curl" "${curl_options[@]}" --request GET --url "$url/api/$endpoint${id:+/}$id${target:+/}$target"
+    "$curl" "${curl_options[@]}" --request GET --url "$url/api/$endpoint${id:+/}$id${target:+/}$target${opts:+?}$opts"
 }
 
 put () {
